@@ -7,9 +7,14 @@ const gameBoard = document.getElementById('game-board');
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
+let matchedPairs = 0;
 
 function shuffle(array) {
-    array.sort(() => Math.random() - 0.5);
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 export function createBoard(cardCount) {
@@ -36,6 +41,7 @@ function handleCardFlip(cardElement) {
     }
 
     secondCard = cardElement;
+    lockBoard = true; 
     checkForMatch();
 }
 
@@ -45,13 +51,20 @@ function checkForMatch() {
 }
 
 function disableCards() {
-    firstCard.removeEventListener('click', flipCard);
-    secondCard.removeEventListener('click', flipCard);
+    matchedPairs++;
+
+    const totalPairs = gameBoard.children.length / 2;
+
+    if (matchedPairs === totalPairs) {
+        setTimeout(() => {
+            alert("Onneksi olkoon! Peli päättyi!");
+        }, 100);
+    }
+
     resetBoard();
 }
 
 function unflipCards() {
-    lockBoard = true;
     setTimeout(() => {
         firstCard.classList.remove('flipped');
         secondCard.classList.remove('flipped');
@@ -63,4 +76,12 @@ function unflipCards() {
 
 function resetBoard() {
     [firstCard, secondCard, lockBoard] = [null, null, false];
+}
+
+export function resetGameBoard() {
+    gameBoard.innerHTML = '';
+    firstCard = null;
+    secondCard = null;
+    lockBoard = false;
+    matchedPairs = 0;
 }
