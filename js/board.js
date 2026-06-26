@@ -29,7 +29,7 @@ export function createBoard(cardCount) {
     shuffle(cards);
     cards.forEach(card => {
         const cardElement = createCardElement(card);
-        cardElement.addEventListener('click', () => flipCard(cardElement, handleCardFlip));
+        cardElement.addEventListener('click', () => handleCardFlip(cardElement));
         gameBoard.appendChild(cardElement);
     });
 }
@@ -37,6 +37,7 @@ export function createBoard(cardCount) {
 function handleCardFlip(cardElement) {
     if (lockBoard) return;
     if (cardElement === firstCard) return;
+    if (cardElement.classList.contains('flipped')) return;
 
     cardElement.classList.add('flipped');
     cardElement.textContent = cardElement.dataset.card;
@@ -51,7 +52,8 @@ function handleCardFlip(cardElement) {
     attempts++;
     attemptCounter.textContent = attempts;
 
-    lockBoard = true; 
+    lockBoard = true;
+
     checkForMatch();
 }
 
@@ -63,6 +65,9 @@ function checkForMatch() {
 function disableCards() {
     matchedPairs++;
 
+    firstCard.classList.add('matched');
+    secondCard.classList.add('matched');
+
     const totalPairs = gameBoard.children.length / 2;
 
     if (matchedPairs === totalPairs) {
@@ -71,13 +76,11 @@ function disableCards() {
         const score = Math.max(0, 1000 - (attempts * 10) - (seconds * 2));
 
         setTimeout(() => {
-            alert(
-                `Onneksi olkoon! Löysit kaikki parit!
+            alert(`Onneksi olkoon! Löysit kaikki parit!
 
 Yrityksiä: ${attempts}
 Aika: ${seconds} s
-Pisteet: ${score}`
-            );
+Pisteet: ${score}`);
         }, 100);
     }
 

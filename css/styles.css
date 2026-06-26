@@ -31,3 +31,7 @@ body {
 .card.flipped {
     background-color: #fff;
 }
+
+.card.matched {
+    visibility: hidden;
+}
