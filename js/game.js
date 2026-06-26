@@ -1,12 +1,10 @@
 import { createBoard, resetGameBoard } from './board.js';
 
 function startGame() {
-    const cardCount = parseInt(prompt("Syötä korttien määrä (parillinen luku):"), 10);
-
-    if (cardCount % 2 !== 0) {
-        alert("Korttien määrän täytyy olla parillinen luku.");
-        return;
-    }
+    const cardCount = parseInt(
+        document.getElementById('card-count').value,
+        10
+    );
 
     resetGameBoard();
     createBoard(cardCount);

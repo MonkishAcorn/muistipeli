@@ -8,6 +8,12 @@ let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
 let matchedPairs = 0;
+let attempts = 0;
+let seconds = 0;
+let timer = null;
+
+const attemptCounter = document.getElementById('attempt-counter');
+const timerDisplay = document.getElementById('timer');
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -41,6 +47,10 @@ function handleCardFlip(cardElement) {
     }
 
     secondCard = cardElement;
+
+    attempts++;
+    attemptCounter.textContent = attempts;
+
     lockBoard = true; 
     checkForMatch();
 }
@@ -56,8 +66,18 @@ function disableCards() {
     const totalPairs = gameBoard.children.length / 2;
 
     if (matchedPairs === totalPairs) {
+        stopTimer();
+
+        const score = Math.max(0, 1000 - (attempts * 10) - (seconds * 2));
+
         setTimeout(() => {
-            alert("Onneksi olkoon! Peli päättyi!");
+            alert(
+                `Onneksi olkoon! Löysit kaikki parit!
+
+Yrityksiä: ${attempts}
+Aika: ${seconds} s
+Pisteet: ${score}`
+            );
         }, 100);
     }
 
@@ -84,4 +104,25 @@ export function resetGameBoard() {
     secondCard = null;
     lockBoard = false;
     matchedPairs = 0;
+
+    attempts = 0;
+    attemptCounter.textContent = attempts;
+
+    startTimer();
+}
+
+function startTimer() {
+    clearInterval(timer);
+
+    seconds = 0;
+    timerDisplay.textContent = seconds;
+
+    timer = setInterval(() => {
+        seconds++;
+        timerDisplay.textContent = seconds;
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timer);
 }
